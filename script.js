@@ -57,22 +57,33 @@ chatWindow.style.display="none";
 
 chatButton.onclick=function(){
 
+
     if(chatWindow.style.display==="none"){
 
         chatWindow.style.display="flex";
 
-        if(messagesBox.innerHTML===""){
+
+        // первый запуск приветствия
+
+        if(!window.dialogStarted){
+
+            window.dialogStarted=true;
 
             startDialog();
 
         }
 
+
     }
+
     else{
+
 
         chatWindow.style.display="none";
 
+
     }
+
 
 };
 
