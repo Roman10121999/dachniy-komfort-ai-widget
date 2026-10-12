@@ -451,7 +451,7 @@ inputField.value="";
 };
 
 
-startDialog();
+window.startDialog = startDialog;
 
 
 });
