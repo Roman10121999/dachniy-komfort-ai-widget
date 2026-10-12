@@ -7,6 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
 <title>
 ИИ-помощник Дачный комфорт
 </title>
@@ -14,13 +15,14 @@
 
 <link rel="stylesheet" href="style.css">
 
+
 </head>
 
 
 <body>
 
 
-<!-- Кнопка открытия -->
+<!-- Кнопка открытия помощника -->
 
 <div id="ai-widget-button">
 
@@ -30,7 +32,8 @@
 
 
 
-<!-- Основное окно AI -->
+
+<!-- Окно AI помощника -->
 
 <div id="ai-widget-window">
 
@@ -41,13 +44,14 @@
 <div class="ai-header">
 
 
-<img
+<img 
 src="assets/assistant.png"
 class="assistant-avatar"
 >
 
 
-<div>
+<div class="assistant-info">
+
 
 <div class="assistant-title">
 
@@ -72,7 +76,7 @@ class="assistant-avatar"
 
 
 
-<!-- История диалога -->
+<!-- История сообщений -->
 
 <div id="chat-history">
 
@@ -82,7 +86,8 @@ class="assistant-avatar"
 
 
 
-<!-- Индикатор печати AI -->
+
+<!-- Индикатор печати -->
 
 <div id="typing-indicator">
 
@@ -93,7 +98,7 @@ class="assistant-avatar"
 
 
 
-<!-- Ответы / быстрые кнопки AI -->
+<!-- Быстрые ответы AI -->
 
 <div id="options-panel">
 
@@ -104,7 +109,7 @@ class="assistant-avatar"
 
 
 
-<!-- Карточки товаров TOP-3 -->
+<!-- Карточки TOP-3 -->
 
 <div id="products-container">
 
@@ -115,15 +120,19 @@ class="assistant-avatar"
 
 
 
-<!-- Поле ввода -->
+<!-- Поле сообщения -->
 
 <div class="input-area">
 
 
 <input
+
 id="user-input"
+
 type="text"
-placeholder="Введите сообщение..."
+
+placeholder="Напишите сообщение..."
+
 >
 
 
