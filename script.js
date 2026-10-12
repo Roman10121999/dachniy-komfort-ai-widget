@@ -1,16 +1,23 @@
 // ==========================================
-// ИИ-помощник "Дачный комфорт"
-// Основная логика виджета
-// Версия 1.1
+// ИИ-ПОМОЩНИК "ДАЧНЫЙ КОМФОРТ"
+// Frontend widget
+// Версия 2.0
+// Подготовлено для интеграции Albato
+// ==========================================
+
+
+// ==========================================
+// ИНИЦИАЛИЗАЦИЯ
 // ==========================================
 
 
 document.addEventListener("DOMContentLoaded", function(){
 
 
-// -------------------------------
-// Элементы интерфейса
-// -------------------------------
+// ==========================================
+// ЭЛЕМЕНТЫ ИНТЕРФЕЙСА
+// ==========================================
+
 
 const chatButton = document.getElementById("ai-widget-button");
 
@@ -25,60 +32,126 @@ const inputField = document.getElementById("user-input");
 const sendButton = document.getElementById("send-button");
 
 
-// -------------------------------
-// Открытие окна
-// -------------------------------
 
-chatButton.onclick = function(){
+// ==========================================
+// ДАННЫЕ КЛИЕНТА
+// Будут отправляться в Albato
+// ==========================================
 
-chatWindow.style.display = "block";
 
-startDialog();
+let clientData = {
+
+    session_id:
+    "dc_" + Date.now(),
+
+    name:null,
+
+    phone:null,
+
+    location:null,
+
+    intent:null,
+
+    category:null,
+
+    product:null,
+
+    answers:{}
 
 };
 
 
-// -------------------------------
-// Добавление сообщения
-// -------------------------------
 
-function addMessage(text,type="ai"){
+// ==========================================
+// ОТКРЫТИЕ ОКНА
+// ==========================================
 
-let message=document.createElement("div");
 
-message.className="message "+type;
+if(chatButton){
 
-message.innerHTML=text;
 
-messagesBox.appendChild(message);
+chatButton.addEventListener("click", function(){
 
-messagesBox.scrollTop=messagesBox.scrollHeight;
+
+chatWindow.style.display="block";
+
+
+if(messagesBox.innerHTML===""){
+
+startDialog();
 
 }
 
 
-// -------------------------------
-// Создание кнопок
-// -------------------------------
+});
 
-function createButtons(items){
+
+}
+
+
+
+// ==========================================
+// ДОБАВЛЕНИЕ СООБЩЕНИЙ
+// ==========================================
+
+
+function addMessage(text,type="ai"){
+
+
+let message=document.createElement("div");
+
+
+message.className=
+"message " + type;
+
+
+message.innerHTML=text;
+
+
+messagesBox.appendChild(message);
+
+
+messagesBox.scrollTop =
+messagesBox.scrollHeight;
+
+
+}
+
+
+
+// ==========================================
+// СОЗДАНИЕ КНОПОК
+// ==========================================
+
+
+function showButtons(buttons){
+
 
 buttonsBox.innerHTML="";
 
 
-items.forEach(item=>{
+buttons.forEach(function(item){
 
 
-let btn=document.createElement("button");
-
-btn.className="scenario-btn";
-
-btn.innerHTML=item.text;
+let button =
+document.createElement("button");
 
 
-btn.onclick=function(){
+button.className="scenario-btn";
 
-addMessage(item.text,"client");
+
+button.innerHTML=item.text;
+
+
+
+button.onclick=function(){
+
+
+addMessage(
+item.text,
+"client"
+);
+
 
 buttonsBox.innerHTML="";
 
@@ -89,10 +162,12 @@ item.action();
 
 }
 
+
 };
 
 
-buttonsBox.appendChild(btn);
+
+buttonsBox.appendChild(button);
 
 
 });
@@ -102,39 +177,40 @@ buttonsBox.appendChild(btn);
 
 
 
-// -------------------------------
-// Первое приветствие
-// -------------------------------
+// ==========================================
+// ПЕРВОЕ ПРИВЕТСТВИЕ
+// ==========================================
+
 
 function startDialog(){
 
 
-if(messagesBox.innerHTML!=="") return;
+addMessage(`
 
-
-addMessage(
-`
 👋 Здравствуйте!
 
-Я — ИИ-помощник компании «Дачный комфорт».
+Я — ИИ-помощник компании
+<strong>«Дачный комфорт»</strong>.
 
-Помогу подобрать оборудование, разобраться с услугами или принять заявку.
+Помогу подобрать оборудование,
+разобраться с услугами или принять заявку.
 
 Выберите, что вас интересует:
-`
-);
+
+`);
 
 
 
-createButtons([
+showButtons([
 
 
 {
+
 text:"🏠 Купить оборудование",
 
 action:function(){
 
-productStart();
+buyProductStart();
 
 }
 
@@ -142,6 +218,7 @@ productStart();
 
 
 {
+
 text:"🛠 Услуги",
 
 action:function(){
@@ -154,6 +231,7 @@ serviceStart();
 
 
 {
+
 text:"⚠️ Аварийная ситуация",
 
 action:function(){
@@ -166,7 +244,8 @@ emergencyStart();
 
 
 {
-text:"❓ Проблема с существующей системой",
+
+text:"🔧 Проблема с существующей системой",
 
 action:function(){
 
@@ -179,279 +258,18 @@ problemStart();
 
 ]);
 
-}
-
-
-
-// -------------------------------
-// Покупка оборудования
-// -------------------------------
-
-
-function productStart(){
-
-
-addMessage(
-"Какое оборудование вас интересует?"
-);
-
-
-createButtons([
-
-
-{
-text:"♻️ Автономная канализация",
-action:function(){
-
-addMessage(
-"Уточним параметры для подбора оптимального варианта."
-);
-
-}
-
-},
-
-
-{
-text:"🚽 Септик",
-action:function(){
-
-addMessage(
-"Уточним параметры для подбора септика."
-);
-
-}
-
-},
-
-
-{
-text:"🛢 Накопительная емкость",
-action:function(){
-
-addMessage(
-"Уточним параметры накопителя."
-);
-
-}
-
-},
-
-
-{
-text:"🏡 Погреб",
-action:function(){
-
-addMessage(
-"Уточним параметры погреба."
-);
-
-}
-
-},
-
-
-{
-text:"🔧 Кессон",
-action:function(){
-
-addMessage(
-"Уточним параметры кессона."
-);
-
-}
-
-},
-
-
-{
-text:"🍽 Жироуловитель",
-action:function(){
-
-addMessage(
-"Уточним параметры жироуловителя."
-);
-
-}
-
-},
-
-
-{
-text:"🏭 Промышленная установка",
-action:function(){
-
-addMessage(
-"Уточним параметры промышленной станции."
-);
-
-}
-
-}
-
-
-]);
-
 
 }
 
 
 
-// -------------------------------
-// Услуги
-// -------------------------------
+// ==========================================
+// ЭКСПОРТ ФУНКЦИИ ДЛЯ ПРОВЕРКИ
+// ==========================================
 
 
-function serviceStart(){
+window.startDialog=startDialog;
 
-
-addMessage(
-"Какая услуга вам требуется?"
-);
-
-
-createButtons([
-
-
-{
-text:"💧 Дренаж",
-action:function(){
-
-addMessage("Уточним параметры участка.");
-
-}
-
-},
-
-
-{
-text:"🌧 Водоотведение",
-action:function(){
-
-addMessage("Уточним особенности задачи.");
-
-}
-
-},
-
-
-{
-text:"🔧 Ремонт",
-action:function(){
-
-addMessage("Опишите проблему.");
-
-}
-
-}
-
-
-]);
-
-
-}
-
-
-
-
-// -------------------------------
-// Авария
-// -------------------------------
-
-
-function emergencyStart(){
-
-
-addMessage(
-"⚠️ Опишите аварийную ситуацию. Что произошло?"
-);
-
-
-}
-
-
-
-
-// -------------------------------
-// Существующая система
-// -------------------------------
-
-
-function problemStart(){
-
-
-addMessage(
-"Какая проблема возникла с существующей системой?"
-);
-
-
-createButtons([
-
-
-{
-text:"🔧 Ремонт",
-action:function(){
-
-addMessage("Опишите неисправность.");
-
-}
-
-},
-
-
-{
-text:"🔍 Диагностика",
-action:function(){
-
-addMessage("Опишите ситуацию.");
-
-}
-
-},
-
-
-{
-text:"🛠 Обслуживание",
-action:function(){
-
-addMessage("Уточним детали.");
-
-}
-
-}
-
-]);
-
-
-}
-
-
-
-
-// -------------------------------
-// Отправка текста
-// -------------------------------
-
-
-sendButton.onclick=function(){
-
-
-let text=inputField.value.trim();
-
-
-if(text==="") return;
-
-
-addMessage(text,"client");
-
-
-inputField.value="";
-
-
-};
-
-
-window.startDialog = startDialog;
 
 
 });
