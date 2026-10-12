@@ -1,67 +1,111 @@
 // ==========================================
 // ИИ-ПОМОЩНИК ДАЧНЫЙ КОМФОРТ
-// AI Assistant Widget V4.0
-// Client Side Core
+// AI Assistant Widget V4.1 FINAL
+// Frontend Client
 // ==========================================
 
 
 
-// ===============================
-// Настройки
-// ===============================
+// ==========================================
+// ALBATO WEBHOOK
+// ==========================================
 
 
-const ALBATO_WEBHOOK_URL = 
+const ALBATO_WEBHOOK_URL =
 "https://h.albato.ru/wh/38/1lf2f6v/6wzofj70-4O_Jbhmy46bCzOgyrB9zeZI66EFr_M52sQ/";
 
 
 
-// ===============================
-// Элементы
-// ===============================
+
+// ==========================================
+// ЭЛЕМЕНТЫ
+// ==========================================
 
 
 const chatButton =
-document.getElementById("ai-widget-button");
+document.getElementById(
+"ai-widget-button"
+);
+
 
 
 const chatWindow =
-document.getElementById("ai-widget-window");
+document.getElementById(
+"ai-widget-window"
+);
+
 
 
 const chatHistory =
-document.getElementById("chat-history");
+document.getElementById(
+"chat-history"
+);
+
 
 
 const optionsPanel =
-document.getElementById("options-panel");
+document.getElementById(
+"options-panel"
+);
+
+
+
+const productsContainer =
+document.getElementById(
+"products-container"
+);
+
+
+
+const typingIndicator =
+document.getElementById(
+"typing-indicator"
+);
+
 
 
 const userInput =
-document.getElementById("user-input");
+document.getElementById(
+"user-input"
+);
+
 
 
 const sendButton =
-document.getElementById("send-button");
+document.getElementById(
+"send-button"
+);
 
 
 
-// ===============================
-// Состояние
-// ===============================
+
+// ==========================================
+// SESSION
+// ==========================================
 
 
-let session = {
+const session = {
 
 
-id:
+session_id:
+
 "dc_" + Date.now(),
+
 
 
 messages: [],
 
 
-clientData:{}
+
+client_data:{},
+
+
+
+intent:null,
+
+
+
+status:null
 
 
 };
@@ -69,45 +113,75 @@ clientData:{}
 
 
 
-let opened=false;
+
+// ==========================================
+// СОСТОЯНИЕ
+// ==========================================
+
+
+let isOpen=false;
 
 
 
-// ===============================
-// Открытие чата
-// ===============================
+let aiStarted=false;
+
+
+
+
+
+// ==========================================
+// ОТКРЫТИЕ / ЗАКРЫТИЕ
+// ==========================================
 
 
 chatWindow.style.display="none";
+
 
 
 
 chatButton.onclick=function(){
 
 
-opened=!opened;
+
+isOpen=!isOpen;
 
 
-if(opened){
+
+
+if(isOpen){
+
 
 
 chatWindow.style.display="flex";
 
 
-if(session.messages.length===0){
+
+
+if(!aiStarted){
+
+
 
 startAssistant();
 
+
+aiStarted=true;
+
+
 }
+
+
 
 
 }else{
 
 
+
 chatWindow.style.display="none";
 
 
+
 }
+
 
 
 };
@@ -116,12 +190,14 @@ chatWindow.style.display="none";
 
 
 
-// ===============================
-// Старт
-// ===============================
+
+// ==========================================
+// СТАРТ AI
+// ==========================================
 
 
 function startAssistant(){
+
 
 
 addAIMessage(
@@ -135,7 +211,7 @@ addAIMessage(
 
 
 
-showOptions([
+showAIButtons([
 
 
 {
@@ -165,6 +241,7 @@ value:"EMERGENCY"
 ]);
 
 
+
 }
 
 
@@ -172,25 +249,19 @@ value:"EMERGENCY"
 
 
 
-// ===============================
-// Добавление сообщения AI
-// ===============================
+// ==========================================
+// СООБЩЕНИЕ AI
+// ==========================================
 
 
 function addAIMessage(text){
 
 
-let div=document.createElement("div");
 
-
-div.className=
-"message assistant";
-
-
-div.innerText=text;
-
-
-chatHistory.appendChild(div);
+createMessage(
+text,
+"assistant"
+);
 
 
 
@@ -204,9 +275,6 @@ content:text
 
 
 
-scrollChat();
-
-
 }
 
 
@@ -214,25 +282,19 @@ scrollChat();
 
 
 
-// ===============================
-// Добавление сообщения клиента
-// ===============================
+// ==========================================
+// СООБЩЕНИЕ КЛИЕНТА
+// ==========================================
 
 
 function addClientMessage(text){
 
 
-let div=document.createElement("div");
 
-
-div.className=
-"message client";
-
-
-div.innerText=text;
-
-
-chatHistory.appendChild(div);
+createMessage(
+text,
+"client"
+);
 
 
 
@@ -245,35 +307,56 @@ content:text
 });
 
 
-
-scrollChat();
-
-
 }
 
 
 
 
 
+// ==========================================
+// СОЗДАНИЕ BUBBLE
+// ==========================================
 
-function scrollChat(){
+
+function createMessage(
+text,
+type
+){
+
+
+
+let message =
+document.createElement("div");
+
+
+
+message.className =
+"message " + type;
+
+
+
+message.innerText =
+text;
+
+
+
+chatHistory.appendChild(
+message
+);
+
 
 
 chatHistory.scrollTop =
 chatHistory.scrollHeight;
 
 
+
 }
 // ==========================================
-// AI COMMUNICATION LAYER
-// Связь Widget → Albato → GigaChat
+// ОТПРАВКА СООБЩЕНИЯ AI
+// Widget → Albato → GigaChat
 // ==========================================
 
-
-
-// ===============================
-// Отправка сообщения
-// ===============================
 
 
 sendButton.onclick=function(){
@@ -284,7 +367,7 @@ userInput.value.trim();
 
 
 
-if(!text)
+if(text==="")
 return;
 
 
@@ -297,9 +380,6 @@ userInput.value="";
 
 
 
-// отправляем AI
-
-
 sendToAI(text);
 
 
@@ -310,10 +390,9 @@ sendToAI(text);
 
 
 
-
-// ===============================
-// Отправка в Albato
-// ===============================
+// ==========================================
+// ОТПРАВКА В ALBATO
+// ==========================================
 
 
 async function sendToAI(message){
@@ -324,11 +403,11 @@ showTyping();
 
 
 
-let payload = {
+const payload={
 
 
 session_id:
-session.id,
+session.session_id,
 
 
 message:
@@ -340,19 +419,18 @@ session.messages,
 
 
 client_data:
-session.clientData
-
+session.client_data
 
 
 };
 
 
 
+
 console.log(
-"Отправляем в AI:",
+"ALBATO REQUEST:",
 payload
 );
-
 
 
 
@@ -360,7 +438,8 @@ payload
 try{
 
 
-let response =
+
+const response =
 await fetch(
 ALBATO_WEBHOOK_URL,
 {
@@ -380,7 +459,9 @@ headers:{
 
 
 body:
+
 JSON.stringify(payload)
+
 
 
 }
@@ -391,8 +472,15 @@ JSON.stringify(payload)
 
 
 
-let data =
+const result =
 await response.json();
+
+
+
+console.log(
+"ALBATO RESPONSE:",
+result
+);
 
 
 
@@ -401,31 +489,33 @@ hideTyping();
 
 
 
-
-receiveAIResponse(data);
+handleAIResponse(result);
 
 
 
 }
+
+
+
 
 catch(error){
 
 
 
-hideTyping();
-
-
-
 console.error(
-"Ошибка AI:",
+"ALBATO ERROR:",
 error
 );
 
 
 
+hideTyping();
+
+
+
 addAIMessage(
 
-"Извините, произошла ошибка соединения. Попробуйте ещё раз."
+"Не удалось получить ответ. Попробуйте ещё раз."
 
 );
 
@@ -435,27 +525,24 @@ addAIMessage(
 
 
 
-
 }
 
 
 
 
 
-
-
-// ===============================
-// Получение ответа AI
-// ===============================
+// ==========================================
+// ОБРАБОТКА ОТВЕТА AI
+// ==========================================
 
 
 
-function receiveAIResponse(data){
+function handleAIResponse(data){
 
 
 
 console.log(
-"Ответ AI:",
+"AI DATA:",
 data
 );
 
@@ -463,221 +550,8 @@ data
 
 
 
-if(data.answer){
+// если пришёл обычный текст
 
-
-addAIMessage(
-data.answer
-);
-
-
-}
-
-
-
-
-if(data.buttons){
-
-
-
-showOptions(
-data.buttons
-);
-
-
-
-}
-
-
-
-if(data.client_data){
-
-
-session.clientData =
-{
-
-...session.clientData,
-
-...data.client_data
-
-};
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-// ===============================
-// Кнопки от AI
-// ===============================
-
-
-
-function showOptions(options){
-
-
-
-optionsPanel.innerHTML="";
-
-
-
-
-
-options.forEach(option=>{
-
-
-
-let button =
-document.createElement("button");
-
-
-
-button.className=
-"scenario-button";
-
-
-
-button.innerText=
-option.text;
-
-
-
-button.onclick=function(){
-
-
-
-addClientMessage(
-option.text
-);
-
-
-
-optionsPanel.innerHTML="";
-
-
-
-
-
-sendToAI(
-option.value
-);
-
-
-
-};
-
-
-
-optionsPanel.appendChild(button);
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-// ===============================
-// Индикатор печати
-// ===============================
-
-
-let typingElement=null;
-
-
-
-function showTyping(){
-
-
-
-typingElement =
-document.createElement("div");
-
-
-
-typingElement.className=
-"message assistant";
-
-
-
-typingElement.innerText=
-"Печатает...";
-
-
-
-chatHistory.appendChild(
-typingElement
-);
-
-
-
-scrollChat();
-
-
-}
-
-
-
-
-
-
-function hideTyping(){
-
-
-
-if(typingElement){
-
-
-typingElement.remove();
-
-
-typingElement=null;
-
-
-}
-
-
-
-}
-// ==========================================
-// AI RESPONSE HANDLER V4.0
-// TOP-3 + LEAD DATA + ALBATO FORMAT
-// ==========================================
-
-
-
-// ===============================
-// Улучшенный ответ AI
-// ===============================
-
-
-function receiveAIResponse(data){
-
-
-
-console.log(
-"AI RESPONSE:",
-data
-);
-
-
-
-// если пришла строка
 
 if(typeof data==="string"){
 
@@ -693,7 +567,8 @@ return;
 
 
 
-// обычный ответ AI
+
+// основной формат
 
 
 if(data.assistant_message){
@@ -709,7 +584,8 @@ data.assistant_message
 
 
 
-// поддержка старого формата
+// альтернативный формат
+
 
 if(data.answer){
 
@@ -724,29 +600,13 @@ data.answer
 
 
 
-// кнопки от AI
-
-
-if(data.buttons){
-
-
-showOptions(
-data.buttons
-);
-
-
-}
-
-
-
-
-// сохранение intent
+// сохраняем intent
 
 
 if(data.intent){
 
 
-session.clientData.intent =
+session.intent =
 data.intent;
 
 
@@ -755,14 +615,57 @@ data.intent;
 
 
 
-// сохранение статуса
+
+// сохраняем статус
 
 
 if(data.status){
 
 
-session.clientData.status =
+session.status =
 data.status;
+
+
+}
+
+
+
+
+
+// данные клиента
+
+
+if(data.client_data){
+
+
+session.client_data =
+{
+
+
+...session.client_data,
+
+
+...data.client_data
+
+
+};
+
+
+}
+
+
+
+
+
+// кнопки AI
+
+
+if(data.buttons){
+
+
+showAIButtons(
+data.buttons
+);
 
 
 }
@@ -786,49 +689,182 @@ data.products
 
 
 
+}
 
 
-// данные клиента
 
 
-if(data.lead){
 
 
-session.clientData =
-{
 
-...session.clientData,
+// ==========================================
+// КНОПКИ AI
+// ==========================================
 
-...data.lead
+
+
+function showAIButtons(buttons){
+
+
+
+optionsPanel.innerHTML="";
+
+
+
+
+
+buttons.forEach(
+buttonData=>{
+
+
+
+let button =
+document.createElement(
+"button"
+);
+
+
+
+button.className =
+"scenario-button";
+
+
+
+button.innerText =
+buttonData.text;
+
+
+
+button.onclick=function(){
+
+
+
+addClientMessage(
+buttonData.text
+);
+
+
+
+optionsPanel.innerHTML="";
+
+
+
+sendToAI(
+buttonData.value
+);
+
+
 
 };
 
 
+
+optionsPanel.appendChild(
+button
+);
+
+
+
+}
+
+);
+
+
+
 }
 
 
 
 
 
+
+
+// ==========================================
+// ИНДИКАТОР ПЕЧАТИ
+// ==========================================
+
+
+
+function showTyping(){
+
+
+
+if(typingIndicator){
+
+
+typingIndicator.innerText =
+"ИИ-помощник печатает...";
+
+
+}
+
+
+
 }
 
 
 
 
-// ===============================
-// TOP-3 вывод
-// ===============================
+
+function hideTyping(){
+
+
+
+if(typingIndicator){
+
+
+typingIndicator.innerText =
+"";
+
+
+}
+
+
+
+}
+// ==========================================
+// ЧАСТЬ 3/3
+// TOP-3 + CONTACTS + LEAD
+// ==========================================
+
+
+
+
+// ==========================================
+// TOP-3 ТОВАРЫ
+// ==========================================
 
 
 function showProducts(products){
 
 
 
-addAIMessage(
+if(!productsContainer)
+return;
 
-"Подобрал для вас подходящие варианты 👇"
 
-);
+
+productsContainer.innerHTML="";
+
+
+
+
+let title =
+document.createElement("div");
+
+
+title.className=
+"products-title";
+
+
+title.innerText =
+"Подобрал для вас подходящие варианты 👇";
+
+
+
+productsContainer.appendChild(title);
+
+
 
 
 
@@ -836,27 +872,48 @@ products.forEach(
 (product,index)=>{
 
 
-let number="🥇";
+let card =
+document.createElement("div");
+
+
+
+card.className=
+"product-card";
+
+
+
+let medal="🥇";
 
 
 if(index===1)
-number="🥈";
+medal="🥈";
 
 
 if(index===2)
-number="🥉";
+medal="🥉";
 
 
 
-addAIMessage(
+card.innerHTML = `
 
-number+
-" "+
-product.name+
-"\n\n"+
-(product.description || "")
+<div class="product-name">
 
-);
+${medal} ${product.name}
+
+</div>
+
+
+<div class="product-description">
+
+${product.description || ""}
+
+</div>
+
+`;
+
+
+
+productsContainer.appendChild(card);
 
 
 
@@ -872,31 +929,26 @@ product.name+
 
 
 
-
-
-// ===============================
-// Сохранение контактов
-// ===============================
-
-
-function updateClientData(data){
+// ==========================================
+// СОХРАНЕНИЕ ДАННЫХ КЛИЕНТА
+// ==========================================
 
 
 
-session.clientData =
-{
+function saveClientData(
+key,
+value
+){
 
-...session.clientData,
 
-...data
 
-};
+session.client_data[key]=value;
 
 
 
 console.log(
 "CLIENT DATA:",
-session.clientData
+session.client_data
 );
 
 
@@ -908,20 +960,28 @@ session.clientData
 
 
 
-// ===============================
-// Подготовка финальной заявки
-// ===============================
+// ==========================================
+// ФИНАЛЬНЫЙ LEAD
+// ==========================================
 
 
-function prepareLead(){
+function createLead(){
 
 
 
-let lead = {
+const lead = {
 
 
 session_id:
-session.id,
+session.session_id,
+
+
+intent:
+session.intent,
+
+
+status:
+"READY",
 
 
 messages:
@@ -929,7 +989,7 @@ session.messages,
 
 
 client:
-session.clientData
+session.client_data
 
 
 
@@ -954,35 +1014,163 @@ return lead;
 
 
 
-// ===============================
-// Защита URL
-// ===============================
+
+// ==========================================
+// ЗАПРОС КОНТАКТОВ
+// ==========================================
 
 
-function checkWebhook(){
+function requestContacts(){
+
+
+
+addAIMessage(
+
+"Спасибо 👍\n\n"+
+"Чтобы специалист мог подготовить предложение, "+
+"оставьте ваши контактные данные."
+
+);
+
+
+
+addAIMessage(
+
+"Как вас зовут?"
+
+);
+
+
+
+session.contactStep =
+"NAME";
+
+
+}
+
+
+
+
+
+
+
+
+// ==========================================
+// ОБРАБОТКА КОНТАКТОВ
+// ==========================================
+
+
+function processContact(text){
 
 
 
 if(
-ALBATO_WEBHOOK_URL.includes(
-"ВАШ_WEBHOOK"
-)
-
+session.contactStep==="NAME"
 ){
 
 
-console.warn(
-"Webhook Albato еще не вставлен"
+saveClientData(
+"name",
+text
 );
 
 
-return false;
+
+session.contactStep="PHONE";
+
+
+
+addAIMessage(
+"Укажите ваш номер телефона."
+);
+
+
+
+return;
 
 
 }
 
 
-return true;
+
+
+
+
+if(
+session.contactStep==="PHONE"
+){
+
+
+saveClientData(
+"phone",
+text
+);
+
+
+
+session.contactStep="LOCATION";
+
+
+
+addAIMessage(
+"Где находится объект?"
+);
+
+
+
+return;
 
 
 }
+
+
+
+
+
+if(
+session.contactStep==="LOCATION"
+){
+
+
+saveClientData(
+"location",
+text
+);
+
+
+
+addAIMessage(
+
+"Спасибо 👍\n"+
+"Заявка передана специалисту."
+
+);
+
+
+
+createLead();
+
+
+
+session.contactStep=null;
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+// ==========================================
+// ЭКСПОРТ ДЛЯ ПРОВЕРКИ
+// ==========================================
+
+
+console.log(
+"AI Widget V4.1 Loaded"
+);
