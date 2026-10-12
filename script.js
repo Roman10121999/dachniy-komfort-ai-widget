@@ -12,7 +12,7 @@
 
 
 const ALBATO_WEBHOOK_URL =
-"https://h.albato.ru/wh/38/1lf2f6v/6wzofj70-4O_Jbhmy46bCzOgyrB9zeZI66EFr_M52sQ/";
+"https://h.albato.ru/wh/38/1lf2f6v/_6fxBemtxuMWEUMK8RtHU2n8WCC4U8Vb-uDcVZbsdlA/";
 
 
 
