@@ -1,103 +1,161 @@
 /* =====================================
-   AI-помощник "Дачный комфорт"
-   Design system
+   ИИ-ПОМОЩНИК ДАЧНЫЙ КОМФОРТ
+   Style V3.1
 ===================================== */
 
 
-/* Общие настройки */
 
-* {
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
+*{
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
 }
 
 
-/* Кнопка открытия */
-
-#ai-widget-button {
-
-    position: fixed;
-
-    right: 25px;
-    bottom: 25px;
-
-    width: 70px;
-    height: 70px;
-
-    background: #8BC34A;
-
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 32px;
-
-    cursor: pointer;
-
-    box-shadow:
-    0 8px 25px rgba(0,0,0,0.2);
-
-    transition: 0.3s;
-
-    z-index: 9999;
-}
 
 
-#ai-widget-button:hover {
+body{
 
-    transform: scale(1.08);
+    margin:0;
+
+    background:#ffffff;
 
 }
 
 
-/* Окно помощника */
-
-#ai-widget-window {
-
-    position: fixed;
-
-    right: 25px;
-    bottom: 110px;
 
 
-    width: 380px;
-    height: 600px;
+
+/* =========================
+   Кнопка открытия
+========================= */
+
+
+#ai-widget-button{
+
+
+    position:fixed;
+
+    right:25px;
+
+    bottom:25px;
+
+
+    width:65px;
+
+    height:65px;
+
+
+    border-radius:50%;
+
+
+    background:#8bc53f;
+
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+
+    font-size:30px;
+
+
+    cursor:pointer;
+
+
+    box-shadow:0 8px 20px rgba(0,0,0,.25);
+
+
+    z-index:9999;
+
+}
+
+
+
+
+
+
+
+/* =========================
+   Окно чата
+========================= */
+
+
+#ai-widget-window{
+
+
+    position:fixed;
+
+
+    right:25px;
+
+    bottom:105px;
+
+
+
+    width:360px;
+
+
+    height:70vh;
+
+
+    max-height:720px;
+
+
+    min-height:520px;
+
 
 
     background:white;
 
 
-    border-radius:22px;
+    border-radius:25px;
+
 
 
     box-shadow:
-    0 15px 40px rgba(0,0,0,0.25);
+
+    0 15px 40px rgba(0,0,0,.25);
+
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
 
 
     overflow:hidden;
 
 
-    display:flex;
-
-    flex-direction:column;
-
-
     z-index:9998;
+
 
 }
 
 
-/* Шапка */
-
-.ai-header {
 
 
-    background:#8BC34A;
 
 
-    padding:18px;
+
+/* =========================
+   Шапка
+========================= */
+
+
+.ai-header{
+
+
+    background:#8bc53f;
+
+
+    height:95px;
+
+
+    padding:15px;
 
 
     display:flex;
@@ -106,41 +164,43 @@
     align-items:center;
 
 
-    color:white;
+    gap:12px;
+
+
+    flex-shrink:0;
+
 
 }
 
 
-/* Аватар */
-
-.assistant-avatar {
 
 
-    width:55px;
+.assistant-avatar{
 
-    height:55px;
+
+    width:65px;
+
+
+    height:65px;
 
 
     border-radius:50%;
 
 
-    margin-right:12px;
-
-
-    object-fit:cover;
-
-
-    background:white;
-
 }
 
 
-/* Название */
-
-.assistant-title {
 
 
-    font-size:18px;
+
+.assistant-title{
+
+
+    color:white;
+
+
+    font-size:20px;
+
 
     font-weight:bold;
 
@@ -148,166 +208,243 @@
 }
 
 
-.assistant-company {
+
+.assistant-company{
+
+
+    color:white;
 
 
     font-size:14px;
 
-    opacity:0.9;
 
 }
 
 
-/* Сообщения */
 
-#chat-messages {
+
+
+
+
+/* =========================
+   История сообщений
+========================= */
+
+
+#chat-history{
 
 
     flex:1;
 
 
-    padding:20px;
-
-
     overflow-y:auto;
-
-
-    background:#f8f8f8;
-
-
-}
-
-
-
-/* Сообщения ИИ */
-
-.ai-message {
-
-
-    background:white;
-
-
-    padding:12px 15px;
-
-
-    border-radius:15px;
-
-
-    margin-bottom:12px;
-
-
-    max-width:85%;
-
-
-    box-shadow:
-    0 3px 10px rgba(0,0,0,0.05);
-
-
-}
-
-
-/* Сообщения клиента */
-
-.user-message {
-
-
-    background:#8BC34A;
-
-
-    color:white;
-
-
-    padding:12px 15px;
-
-
-    border-radius:15px;
-
-
-    margin-left:auto;
-
-
-    margin-bottom:12px;
-
-
-    max-width:85%;
-
-
-}
-
-
-
-/* Кнопки сценариев */
-
-#scenario-buttons {
 
 
     padding:15px;
 
 
-    background:white;
+    background:#fafafa;
+
 
 
 }
 
 
 
-.scenario-button {
 
 
-    width:100%;
+/* =========================
+   Сообщения
+========================= */
 
 
-    padding:13px;
+.message{
 
 
-    margin-bottom:10px;
+    max-width:85%;
 
 
-    border:none;
+    padding:12px 15px;
 
 
-    border-radius:14px;
+    margin-bottom:12px;
 
 
-    background:#8BC34A;
-
-
-    color:white;
+    line-height:1.4;
 
 
     font-size:15px;
 
 
+    word-wrap:break-word;
+
+
+}
+
+
+
+
+
+
+
+/* ИИ */
+
+
+.message.assistant{
+
+
+    background:white;
+
+
+    color:#222;
+
+
+    align-self:flex-start;
+
+
+    border-radius:18px 18px 18px 5px;
+
+
+    box-shadow:0 2px 5px rgba(0,0,0,.12);
+
+
+}
+
+
+
+
+
+
+/* Клиент */
+
+
+.message.client{
+
+
+    background:#8bc53f;
+
+
+    color:white;
+
+
+    align-self:flex-end;
+
+
+    margin-left:auto;
+
+
+    border-radius:18px 18px 5px 18px;
+
+
+}
+
+
+
+
+
+
+/* =========================
+   Панель кнопок
+========================= */
+
+
+#options-panel{
+
+
+    padding:10px;
+
+
+    border-top:1px solid #eee;
+
+
+    background:white;
+
+
+    max-height:170px;
+
+
+    overflow-y:auto;
+
+
+
+}
+
+
+
+
+
+
+
+.scenario-button{
+
+
+    width:100%;
+
+
+    border:none;
+
+
+    background:#8bc53f;
+
+
+    color:white;
+
+
+
+    padding:12px;
+
+
+    margin-bottom:8px;
+
+
+
+    border-radius:14px;
+
+
+
+    font-size:15px;
+
+
+
     cursor:pointer;
 
 
-    transition:0.25s;
+
+    transition:.2s;
+
 
 
 }
 
 
 
-.scenario-button:hover {
+
+.scenario-button:hover{
 
 
-    background:#72ad35;
-
-
-    transform:translateY(-2px);
+    transform:scale(1.02);
 
 
 }
 
 
 
-/* Поле ввода */
 
 
-.input-area {
+
+
+/* =========================
+   Поле ввода
+========================= */
+
+
+.input-area{
 
 
     display:flex;
+
+
+    gap:8px;
 
 
     padding:12px;
@@ -319,23 +456,29 @@
     background:white;
 
 
+
 }
 
 
 
-#user-input {
+
+
+#user-input{
 
 
     flex:1;
 
 
+    padding:12px;
+
+
+    border-radius:18px;
+
+
     border:1px solid #ddd;
 
 
-    border-radius:12px;
-
-
-    padding:12px;
+    outline:none;
 
 
     font-size:14px;
@@ -345,65 +488,78 @@
 
 
 
-#send-button {
 
 
-    margin-left:8px;
+#send-button{
 
 
     width:45px;
 
 
+    height:45px;
+
+
     border:none;
 
 
-    border-radius:12px;
+    border-radius:15px;
 
 
-    background:#8BC34A;
+    background:#8bc53f;
 
 
     color:white;
 
 
+    font-size:22px;
+
+
     cursor:pointer;
 
 
-    font-size:20px;
 
 }
 
 
 
-/* Анимация появления */
-
-@keyframes showWidget {
 
 
-    from {
-
-        opacity:0;
-
-        transform:translateY(30px);
-
-    }
 
 
-    to {
 
-        opacity:1;
+/* =========================
+   Телефон
+========================= */
 
-        transform:translateY(0);
 
-    }
+@media(max-width:600px){
+
+
+#ai-widget-window{
+
+
+    right:10px;
+
+
+    left:10px;
+
+
+    width:auto;
+
+
+    height:75vh;
 
 
 }
 
 
-#ai-widget-window {
+#ai-widget-button{
 
 
-    animation:showWidget 0.4s ease;
+    right:20px;
+
+}
+
+
 
 }
