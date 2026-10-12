@@ -1,59 +1,130 @@
-// ======================================
-// ИИ-ПОМОЩНИК ДАЧНЫЙ КОМФОРТ
-// Widget Core V2.1 FINAL
-// Сценарии Albato
-// ======================================
+// ==========================================
+// ИИ-ПОМОЩНИК "ДАЧНЫЙ КОМФОРТ"
+// Widget Core V3.0
+// AI Lead Qualifier Frontend
+// По таблице AI_DIALOG_MAP FINAL v3
+// ==========================================
 
 
-// ==============================
-// Элементы
-// ==============================
+// ==========================================
+// ЭЛЕМЕНТЫ
+// ==========================================
 
 
-const chatButton = document.getElementById(
-    "ai-widget-button"
-);
+const chatButton =
+document.getElementById("ai-widget-button");
 
 
-const chatWindow = document.getElementById(
-    "ai-widget-window"
-);
+const chatWindow =
+document.getElementById("ai-widget-window");
 
 
-const messagesBox = document.getElementById(
-    "chat-messages"
-);
+const messagesBox =
+document.getElementById("chat-messages");
 
 
-const buttonsBox = document.getElementById(
-    "scenario-buttons"
-);
+const buttonsBox =
+document.getElementById("scenario-buttons");
+
+
+const inputField =
+document.getElementById("user-input");
+
+
+const sendButton =
+document.getElementById("send-button");
 
 
 
-// ==============================
-// Состояние клиента
-// ==============================
+// ==========================================
+// СОСТОЯНИЕ WIDGET
+// ==========================================
 
 
-let session = {
+let opened = false;
+
+
+let started = false;
+
+
+// текущая ветка
+
+let currentBranch = "START";
+
+
+// история
+
+let history = [];
+
+
+// SESSION для Albato
+
+let SESSION = {
+
 
     session_id:
-        "session_" + Date.now(),
+    "session_" + Date.now(),
+
 
     intent:null,
 
+
     product_category:null,
+
 
     service_type:null,
 
+
+    users:null,
+
+
+    seasonality:null,
+
+
+    electricity_status:null,
+
+
+    budget:null,
+
+
+    requested_model:null,
+
+
+    soil_known:null,
+
+
+    existing_communications:null,
+
+
+    purpose:null,
+
+
+    volume:null,
+
+
+    dimensions:null,
+
+
+    well_status:null,
+
+
+    object_type:null,
+
+
+    load:null,
+
+
     problem_type:null,
+
 
     client_comment:null,
 
-    name:null,
 
-    phone:null,
+    client_name:null,
+
+
+    client_phone:null,
+
 
     location:null
 
@@ -61,57 +132,51 @@ let session = {
 
 
 
-// ==============================
-// Состояние окна
-// ==============================
 
-
-let isOpen=false;
-
-let started=false;
-
+// ==========================================
+// ОТКРЫТИЕ / ЗАКРЫТИЕ
+// ==========================================
 
 
 chatWindow.style.display="none";
 
 
 
-// ==============================
-// Открытие окна
-// ==============================
-
-
 chatButton.onclick=function(){
 
 
-    isOpen=!isOpen;
+opened=!opened;
 
 
 
-    if(isOpen){
+if(opened){
 
 
-        chatWindow.style.display="block";
+chatWindow.style.display="flex";
 
 
 
-        if(!started){
-
-            startAssistant();
-
-            started=true;
-
-        }
+if(!started){
 
 
-    }
-
-    else{
+startAssistant();
 
 
-        chatWindow.style.display="none";
+started=true;
 
-    }
+
+}
+
+
+
+}else{
+
+
+chatWindow.style.display="none";
+
+
+}
+
 
 
 };
@@ -119,29 +184,66 @@ chatButton.onclick=function(){
 
 
 
-// ==============================
-// Сообщения
-// ==============================
+
+// ==========================================
+// ДОБАВЛЕНИЕ СООБЩЕНИЙ
+// ==========================================
+
 
 
 function addMessage(text,type="assistant"){
 
 
-    let message=document.createElement("div");
 
-
-    message.className="message "+type;
-
-
-    message.innerText=text;
-
-
-    messagesBox.appendChild(message);
+let div=document.createElement("div");
 
 
 
-    messagesBox.scrollTop =
-        messagesBox.scrollHeight;
+div.className=
+"message "+type;
+
+
+
+div.innerText=text;
+
+
+
+messagesBox.appendChild(div);
+
+
+
+history.push({
+
+role:type,
+
+message:text
+
+});
+
+
+
+messagesBox.scrollTop=
+messagesBox.scrollHeight;
+
+
+
+}
+
+
+
+
+// ==========================================
+// СООБЩЕНИЕ КЛИЕНТА
+// ==========================================
+
+
+function clientMessage(text){
+
+
+addMessage(
+text,
+"client"
+);
 
 
 }
@@ -149,38 +251,60 @@ function addMessage(text,type="assistant"){
 
 
 
-// ==============================
-// Кнопки
-// ==============================
 
-
-function createButton(text,callback){
-
-
-    let btn=document.createElement("button");
-
-
-    btn.className="scenario-button";
-
-
-    btn.innerText=text;
-
-
-    btn.onclick=callback;
-
-
-    buttonsBox.appendChild(btn);
-
-
-}
-
-
+// ==========================================
+// КНОПКИ
+// ==========================================
 
 
 function clearButtons(){
 
 
-    buttonsBox.innerHTML="";
+buttonsBox.innerHTML="";
+
+
+}
+
+
+
+function createButton(
+text,
+callback
+){
+
+
+let button=
+document.createElement("button");
+
+
+button.className=
+"scenario-button";
+
+
+button.innerText=text;
+
+
+
+button.onclick=function(){
+
+
+clientMessage(text);
+
+
+
+clearButtons();
+
+
+
+callback();
+
+
+
+};
+
+
+
+buttonsBox.appendChild(button);
 
 
 }
@@ -188,66 +312,244 @@ function clearButtons(){
 
 
 
-// ==============================
-// Стартовый экран
-// ==============================
+
+// ==========================================
+// НАЗАД
+// ==========================================
+
+
+function backButton(callback){
+
+
+createButton(
+"⬅️ Назад",
+callback
+);
+
+
+}
+
+
+
+
+
+// ==========================================
+// ПЕРЕДАЧА SESSION
+// ==========================================
+
+
+function setField(
+field,
+value
+){
+
+
+SESSION[field]=value;
+
+
+
+console.log(
+"SESSION UPDATE",
+SESSION
+);
+
+
+}
+
+
+
+
+
+// ==========================================
+// ТЕКСТОВЫЙ ВВОД
+// ==========================================
+
+
+sendButton.onclick=function(){
+
+
+let text =
+inputField.value.trim();
+
+
+
+if(text==="")
+return;
+
+
+
+clientMessage(text);
+
+
+
+inputField.value="";
+
+
+
+// аварийная ветка
+
+if(currentBranch==="EMERGENCY"){
+
+
+setField(
+"client_comment",
+text
+);
+
+
+showContacts();
+
+
+return;
+
+}
+
+
+
+// обычный вопрос
+
+addMessage(
+"Спасибо 👍 Я учту информацию."
+);
+
+
+
+};
+// ==========================================
+// СЦЕНАРИИ
+// ЧАСТЬ 2
+// START + BUY_PRODUCT
+// ==========================================
+
+
+// ==========================================
+// СТАРТОВОЕ МЕНЮ
+// ==========================================
 
 
 function startAssistant(){
 
 
+currentBranch="START";
+
 
 addMessage(
-"Здравствуйте! 👋\n\nЯ ИИ-помощник компании «Дачный комфорт».\n\nПомогу подобрать оборудование, выбрать услугу или решить проблему с существующей системой."
+"👋 Здравствуйте!\n\nЯ ИИ-помощник компании «Дачный комфорт».\n\nПомогу подобрать оборудование, решить проблему или выбрать услугу."
 );
+
+
+showStartMenu();
+
+
+}
+
+
+
+
+function showStartMenu(){
+
+
+clearButtons();
+
+
+currentBranch="START";
 
 
 
 createButton(
 "🏠 Купить оборудование",
-buyProduct
+function(){
+
+setField(
+"intent",
+"BUY_PRODUCT"
+);
+
+
+showProductCategories();
+
+
+}
+
 );
 
 
 
 createButton(
 "🔧 Заказать услугу",
-serviceStart
+function(){
+
+setField(
+"intent",
+"SERVICE"
+);
+
+
+showServices();
+
+
+}
+
 );
 
 
 
 createButton(
 "🛠 Уже есть система, нужна помощь",
-existingProblemStart
+function(){
+
+setField(
+"intent",
+"EXISTING_PROBLEM"
+);
+
+
+showProblems();
+
+
+}
+
 );
 
 
 
 createButton(
 "⚠️ Аварийная ситуация",
-emergencyStart
+function(){
+
+setField(
+"intent",
+"EMERGENCY"
 );
 
+
+currentBranch="EMERGENCY";
+
+
+addMessage(
+"Опишите, что произошло ⚠️"
+);
+
+
+}
+
+);
 
 
 }
 
 
 
-// ==============================
-// BUY PRODUCT
-// ==============================
+
+// ==========================================
+// КАТЕГОРИИ ОБОРУДОВАНИЯ
+// ==========================================
 
 
-function buyProduct(){
+function showProductCategories(){
 
 
-session.intent="BUY_PRODUCT";
-
-
-clearButtons();
-
+currentBranch="BUY_PRODUCT";
 
 
 addMessage(
@@ -256,17 +558,22 @@ addMessage(
 
 
 
+clearButtons();
+
+
+
 createButton(
 "💧 Автономная канализация",
 function(){
 
-session.product_category="СБО";
-
-addMessage(
-"Вы выбрали автономную канализацию."
+setField(
+"product_category",
+"СБО"
 );
 
-nextProductQuestions();
+
+showSBO();
+
 
 }
 
@@ -278,13 +585,14 @@ createButton(
 "🚽 Септик",
 function(){
 
-session.product_category="СЕПТИК";
-
-addMessage(
-"Вы выбрали септик."
+setField(
+"product_category",
+"СЕПТИК"
 );
 
-nextProductQuestions();
+
+showSeptic();
+
 
 }
 
@@ -296,13 +604,14 @@ createButton(
 "🛢 Накопительная емкость",
 function(){
 
-session.product_category="НАКОПИТЕЛЬ";
-
-addMessage(
-"Вы выбрали накопительную емкость."
+setField(
+"product_category",
+"НАКОПИТЕЛЬ"
 );
 
-nextProductQuestions();
+
+showStorage();
+
 
 }
 
@@ -314,13 +623,14 @@ createButton(
 "🏠 Погреб",
 function(){
 
-session.product_category="ПОГРЕБ";
-
-addMessage(
-"Вы выбрали погреб."
+setField(
+"product_category",
+"ПОГРЕБ"
 );
 
-nextProductQuestions();
+
+showCellar();
+
 
 }
 
@@ -332,13 +642,14 @@ createButton(
 "🔧 Кессон",
 function(){
 
-session.product_category="КЕССОН";
-
-addMessage(
-"Вы выбрали кессон."
+setField(
+"product_category",
+"КЕССОН"
 );
 
-nextProductQuestions();
+
+showCaisson();
+
 
 }
 
@@ -350,13 +661,14 @@ createButton(
 "🍴 Жироуловитель",
 function(){
 
-session.product_category="ЖИРОУЛОВИТЕЛЬ";
-
-addMessage(
-"Вы выбрали жироуловитель."
+setField(
+"product_category",
+"ЖИРОУЛАВЛИВАТЕЛЬ"
 );
 
-nextProductQuestions();
+
+showGrease();
+
 
 }
 
@@ -368,140 +680,133 @@ createButton(
 "🏭 Промышленная установка",
 function(){
 
-session.product_category="ПРОМ";
+setField(
+"product_category",
+"ПРОМ_УСТАНОВКИ"
+);
+
+
+showIndustrial();
+
+
+}
+
+);
+
+
+
+backButton(
+showStartMenu
+);
+
+
+}
+
+
+
+
+
+// ==========================================
+// ВЕТКА СБО
+// Автономная канализация
+// ==========================================
+
+
+function showSBO(){
+
+
+currentBranch="СБО";
+
 
 addMessage(
-"Вы выбрали промышленную установку."
+"Сколько человек будет пользоваться системой?"
 );
 
-nextProductQuestions();
-
-}
-
-);
-
-
-
-}
-// ==============================
-// Вопросы по оборудованию
-// ==============================
-
-
-function nextProductQuestions(){
 
 
 clearButtons();
 
 
+
+createButton(
+"1-2",
+()=>showSeasonality("1-2")
+);
+
+
+createButton(
+"3-4",
+()=>showSeasonality("3-4")
+);
+
+
+createButton(
+"5-6",
+()=>showSeasonality("5-6")
+);
+
+
+createButton(
+"7-8",
+()=>showSeasonality("7-8")
+);
+
+
+createButton(
+"Более 8",
+()=>showSeasonality("Более 8")
+);
+
+
+}
+
+
+
+
+function showSeasonality(value){
+
+
+setField(
+"users",
+value
+);
+
+
 addMessage(
-"Отлично 👍 Чтобы подобрать подходящий вариант, уточню несколько вопросов."
+"Как планируете использовать дом?"
 );
 
-
-
-createButton(
-"👥 1-2 человека",
-function(){
-
-session.users="1-2";
-
-askSeason();
-
-}
-);
-
-
-
-createButton(
-"👥 3-4 человека",
-function(){
-
-session.users="3-4";
-
-askSeason();
-
-}
-);
-
-
-
-createButton(
-"👥 5-6 человек",
-function(){
-
-session.users="5-6";
-
-askSeason();
-
-}
-);
-
-
-
-createButton(
-"👥 Более 6 человек",
-function(){
-
-session.users="7+";
-
-askSeason();
-
-}
-);
-
-
-
-}
-
-
-
-function askSeason(){
 
 
 clearButtons();
 
 
-addMessage(
-"Как часто вы проживаете или планируете проживать в доме?"
-);
 
+createButton(
+"🏡 Постоянно",
+()=>showElectricity("Постоянно")
+);
 
 
 createButton(
-"🏡 Постоянное проживание",
-function(){
-
-session.seasonality="ПОСТОЯННО";
-
-askElectricity();
-
-}
+"🌿 Сезонно",
+()=>showElectricity("Сезонно")
 );
 
 
-
-createButton(
-"🌿 Сезонное проживание",
-function(){
-
-session.seasonality="СЕЗОННО";
-
-askElectricity();
-
 }
+
+
+
+
+function showElectricity(value){
+
+
+setField(
+"seasonality",
+value
 );
 
-
-
-}
-
-
-
-function askElectricity(){
-
-
-clearButtons();
 
 
 addMessage(
@@ -510,156 +815,971 @@ addMessage(
 
 
 
-createButton(
-"⚡ Да",
-function(){
-
-session.electricity_status="YES";
-
-finishProduct();
-
-}
-);
+clearButtons();
 
 
 
 createButton(
-"🔋 Нет",
-function(){
-
-session.electricity_status="NO";
-
-finishProduct();
-
-}
+"⚡ Есть",
+()=>showSoil("Есть")
 );
-
 
 
 createButton(
-"❓ Не знаю",
-function(){
+"🔌 Нет",
+()=>showSoil("Нет")
+);
 
-session.electricity_status="UNKNOWN";
 
-finishProduct();
+createButton(
+"⏳ Планируется",
+()=>showSoil("Планируется")
+);
+
 
 }
+
+
+
+function showSoil(value){
+
+
+setField(
+"electricity_status",
+value
 );
 
 
 
-}
+addMessage(
+"Знаете особенности участка?"
+);
 
-
-
-function finishProduct(){
 
 
 clearButtons();
 
 
-addMessage(
-"Спасибо! Я подготовил предварительный подбор вариантов. Специалист компании свяжется с вами для уточнения деталей."
+
+createButton(
+"Да",
+()=>showCommunications("Да")
 );
 
 
-sendToAlbato();
+createButton(
+"Нет",
+()=>showCommunications("Нет")
+);
+
 
 
 }
 
 
 
-// ==============================
-// SERVICE
-// ==============================
+function showCommunications(value){
 
 
-function serviceStart(){
+setField(
+"soil_known",
+value
+);
 
 
-session.intent="SERVICE";
+
+addMessage(
+"Есть ли существующие коммуникации?"
+);
+
 
 
 clearButtons();
 
 
-addMessage(
-"Какая услуга вам необходима?"
+
+createButton(
+"🏠 Дом готов",
+()=>showModel("Дом готов")
 );
 
 
 
 createButton(
-"🔧 Установка оборудования",
-()=>serviceSelect("INSTALLATION")
+"🏗 Строится",
+()=>showModel("Строится")
+);
+
+
+
+createButton(
+"📌 Планируется",
+()=>showModel("Планируется")
+);
+
+
+
+}
+
+
+
+function showModel(value){
+
+
+setField(
+"existing_communications",
+value
+);
+
+
+
+addMessage(
+"Какую модель рассматриваете?"
+);
+
+
+
+clearButtons();
+
+
+
+createButton(
+"Название модели",
+()=>showBudget("Название модели")
+);
+
+
+
+createButton(
+"Не знаю",
+()=>showBudget("Не знаю")
+);
+
+
+
+}
+
+
+
+function showBudget(value){
+
+
+setField(
+"requested_model",
+value
+);
+
+
+
+addMessage(
+"Какой бюджет рассматриваете?"
+);
+
+
+
+clearButtons();
+
+
+
+createButton(
+"До 200 000 ₽",
+()=>finishQualification("До 200 000 ₽")
+);
+
+
+
+createButton(
+"200 000 - 300 000 ₽",
+()=>finishQualification("200 000 - 300 000 ₽")
+);
+
+
+
+createButton(
+"Более 300 000 ₽",
+()=>finishQualification("Более 300 000 ₽")
+);
+
+
+
+}
+
+
+
+function finishQualification(value){
+
+
+setField(
+"budget",
+value
+);
+
+
+
+addMessage(
+"Спасибо 👍 Подготовлю подходящие варианты."
+);
+
+
+
+showContacts();
+
+
+}
+// ==========================================
+// ЧАСТЬ 3
+// Остальные товарные ветки + услуги + проблемы
+// ==========================================
+
+
+// ==========================================
+// СЕПТИК
+// ==========================================
+
+function showSeptic(){
+
+currentBranch="СЕПТИК";
+
+addMessage(
+"Сколько человек будет пользоваться?"
+);
+
+clearButtons();
+
+
+createButton(
+"1-2",
+()=>septicUsers("1-2")
+);
+
+createButton(
+"3-4",
+()=>septicUsers("3-4")
+);
+
+createButton(
+"5-6",
+()=>septicUsers("5-6")
+);
+
+createButton(
+"7-8",
+()=>septicUsers("7-8")
+);
+
+backButton(showProductCategories);
+
+}
+
+
+
+function septicUsers(value){
+
+setField(
+"users",
+value
+);
+
+
+addMessage(
+"Как часто проживаете?"
+);
+
+
+clearButtons();
+
+
+createButton(
+"🏡 Постоянно",
+()=>septicSeason("Постоянно")
+);
+
+
+createButton(
+"🌿 Сезонно",
+()=>septicSeason("Сезонно")
+);
+
+
+}
+
+
+
+function septicSeason(value){
+
+setField(
+"seasonality",
+value
+);
+
+
+addMessage(
+"Есть ли электричество?"
+);
+
+
+clearButtons();
+
+
+createButton(
+"⚡ Есть",
+()=>septicElectricity("Есть")
+);
+
+
+createButton(
+"🔌 Нет",
+()=>septicElectricity("Нет")
+);
+
+
+}
+
+
+
+function septicElectricity(value){
+
+setField(
+"electricity_status",
+value
+);
+
+
+addMessage(
+"Спасибо 👍 Подготовлю подбор."
+);
+
+
+showContacts();
+
+}
+
+
+
+// ==========================================
+// НАКОПИТЕЛЬ
+// ==========================================
+
+
+function showStorage(){
+
+currentBranch="НАКОПИТЕЛЬ";
+
+
+addMessage(
+"Для чего нужна накопительная емкость?"
+);
+
+
+clearButtons();
+
+
+createButton(
+"🏠 Дом",
+()=>storagePurpose("Дом")
+);
+
+
+createButton(
+"🌿 Дача",
+()=>storagePurpose("Дача")
+);
+
+
+createButton(
+"🏢 Другой объект",
+()=>storagePurpose("Другой объект")
+);
+
+
+}
+
+
+
+function storagePurpose(value){
+
+setField(
+"purpose",
+value
+);
+
+
+addMessage(
+"Какой объем нужен?"
+);
+
+
+clearButtons();
+
+
+createButton(
+"До 3 м³",
+()=>storageVolume("До 3 м³")
+);
+
+
+createButton(
+"3-5 м³",
+()=>storageVolume("3-5 м³")
+);
+
+
+createButton(
+"5-10 м³",
+()=>storageVolume("5-10 м³")
+);
+
+
+createButton(
+"Не знаю",
+()=>storageVolume("Не знаю")
+);
+
+
+}
+
+
+
+function storageVolume(value){
+
+setField(
+"volume",
+value
+);
+
+
+addMessage(
+"Спасибо 👍 Подготовлю варианты."
+);
+
+
+showContacts();
+
+}
+
+
+
+
+// ==========================================
+// ПОГРЕБ
+// ==========================================
+
+
+function showCellar(){
+
+currentBranch="ПОГРЕБ";
+
+
+addMessage(
+"Для чего нужен погреб?"
+);
+
+
+clearButtons();
+
+
+createButton(
+"🥫 Хранение продуктов",
+()=>cellarPurpose("Хранение продуктов")
+);
+
+
+createButton(
+"🌿 Дача",
+()=>cellarPurpose("Дача")
+);
+
+
+createButton(
+"Другое",
+()=>cellarPurpose("Другое")
+);
+
+
+}
+
+
+
+function cellarPurpose(value){
+
+setField(
+"purpose",
+value
+);
+
+
+addMessage(
+"Какой размер нужен?"
+);
+
+
+clearButtons();
+
+
+createButton(
+"Компактный",
+()=>cellarSize("Компактный")
+);
+
+
+createButton(
+"Средний",
+()=>cellarSize("Средний")
+);
+
+
+createButton(
+"Большой",
+()=>cellarSize("Большой")
+);
+
+
+createButton(
+"Не знаю",
+()=>cellarSize("Не знаю")
+);
+
+
+}
+
+
+
+function cellarSize(value){
+
+setField(
+"dimensions",
+value
+);
+
+
+showContacts();
+
+}
+
+
+
+
+// ==========================================
+// КЕССОН
+// ==========================================
+
+
+function showCaisson(){
+
+currentBranch="КЕССОН";
+
+
+addMessage(
+"Для чего нужен кессон?"
+);
+
+
+clearButtons();
+
+
+createButton(
+"💧 Для скважины",
+()=>caissonPurpose("Для скважины")
+);
+
+
+createButton(
+"⚙️ Для оборудования",
+()=>caissonPurpose("Для оборудования")
+);
+
+
+createButton(
+"Не знаю",
+()=>caissonPurpose("Не знаю")
+);
+
+
+}
+
+
+
+function caissonPurpose(value){
+
+setField(
+"purpose",
+value
+);
+
+
+addMessage(
+"Скважина уже есть?"
+);
+
+
+clearButtons();
+
+
+createButton(
+"Да",
+()=>caissonWell("Да")
+);
+
+
+createButton(
+"Планируется",
+()=>caissonWell("Планируется")
+);
+
+
+}
+
+
+
+function caissonWell(value){
+
+setField(
+"well_status",
+value
+);
+
+
+showContacts();
+
+}
+
+
+
+
+// ==========================================
+// ЖИРОУЛОВИТЕЛЬ
+// ==========================================
+
+
+function showGrease(){
+
+currentBranch="ЖИРОУЛАВЛИВАТЕЛЬ";
+
+
+addMessage(
+"Для какого объекта нужен жироуловитель?"
+);
+
+
+clearButtons();
+
+
+createButton(
+"🏠 Дом",
+()=>greaseObject("Дом")
+);
+
+
+createButton(
+"☕ Кафе",
+()=>greaseObject("Кафе")
+);
+
+
+createButton(
+"🍽 Ресторан",
+()=>greaseObject("Ресторан")
+);
+
+
+createButton(
+"🏭 Производство",
+()=>greaseObject("Производство")
+);
+
+
+}
+
+
+
+function greaseObject(value){
+
+setField(
+"object_type",
+value
+);
+
+
+addMessage(
+"Какая нагрузка?"
+);
+
+
+clearButtons();
+
+
+createButton(
+"Небольшая",
+()=>greaseLoad("Небольшая")
+);
+
+
+createButton(
+"Средняя",
+()=>greaseLoad("Средняя")
+);
+
+
+createButton(
+"Большая",
+()=>greaseLoad("Большая")
+);
+
+
+createButton(
+"Не знаю",
+()=>greaseLoad("Не знаю")
+);
+
+
+}
+
+
+
+function greaseLoad(value){
+
+setField(
+"load",
+value
+);
+
+
+showContacts();
+
+}
+
+
+
+// ==========================================
+// ПРОМЫШЛЕННАЯ УСТАНОВКА
+// ==========================================
+
+
+function showIndustrial(){
+
+currentBranch="ПРОМ_УСТАНОВКИ";
+
+
+addMessage(
+"Какой объект?"
+);
+
+
+clearButtons();
+
+
+createButton(
+"База отдыха",
+()=>industrialObject("База отдыха")
+);
+
+
+createButton(
+"Производство",
+()=>industrialObject("Производство")
+);
+
+
+createButton(
+"Ресторан",
+()=>industrialObject("Ресторан")
+);
+
+
+createButton(
+"Другое",
+()=>industrialObject("Другое")
+);
+
+
+}
+
+
+
+function industrialObject(value){
+
+setField(
+"object_type",
+value
+);
+
+
+addMessage(
+"Количество пользователей?"
+);
+
+
+clearButtons();
+
+
+createButton(
+"Указать количество",
+()=>industrialUsers()
+);
+
+
+}
+
+
+
+function industrialUsers(){
+
+setField(
+"users",
+"Указано клиентом"
+);
+
+
+showContacts();
+
+}
+// ==========================================
+// ЧАСТЬ 4
+// SERVICE + EXISTING_PROBLEM + CONTACTS
+// + подготовка Albato
+// ==========================================
+
+
+
+// ==========================================
+// УСЛУГИ
+// ==========================================
+
+
+function showServices(){
+
+
+currentBranch="SERVICE";
+
+
+addMessage(
+"Какая услуга вас интересует?"
+);
+
+
+clearButtons();
+
+
+
+createButton(
+"🔧 Монтаж оборудования",
+function(){
+
+setField(
+"service_type",
+"МОНТАЖ"
+);
+
+serviceComment();
+
+}
+
 );
 
 
 
 createButton(
 "🛠 Обслуживание системы",
-()=>serviceSelect("MAINTENANCE")
+function(){
+
+setField(
+"service_type",
+"ОБСЛУЖИВАНИЕ"
+);
+
+serviceComment();
+
+}
+
 );
 
 
 
 createButton(
 "🌱 Дренаж участка",
-()=>serviceSelect("DRAINAGE")
+function(){
+
+setField(
+"service_type",
+"ДРЕНАЖ"
+);
+
+serviceComment();
+
+}
+
 );
 
 
 
 createButton(
-"🌧 Ливневая канализация",
-()=>serviceSelect("STORM_WATER")
+"🌧 Водоотведение",
+function(){
+
+setField(
+"service_type",
+"ВОДООТВЕДЕНИЕ"
+);
+
+serviceComment();
+
+}
+
 );
 
 
 
 createButton(
 "💬 Консультация специалиста",
-()=>serviceSelect("CONSULTATION")
+function(){
+
+setField(
+"service_type",
+"КОНСУЛЬТАЦИЯ"
 );
 
+serviceComment();
+
+}
+
+);
+
+
+
+backButton(
+showStartMenu
+);
 
 
 }
 
 
 
-function serviceSelect(type){
 
-
-session.service_type=type;
-
-
-clearButtons();
+function serviceComment(){
 
 
 addMessage(
-"Спасибо. Опишите подробнее вашу задачу."
+"Расскажите подробнее о вашей задаче."
 );
+
+
+currentBranch="SERVICE_COMMENT";
 
 
 }
 
 
 
-// ==============================
-// EXISTING PROBLEM
-// ==============================
+// ==========================================
+// ПРОБЛЕМА СУЩЕСТВУЮЩЕЙ СИСТЕМЫ
+// ==========================================
 
 
-function existingProblemStart(){
+function showProblems(){
 
 
-session.intent="EXISTING_PROBLEM";
-
-
-clearButtons();
+currentBranch="EXISTING_PROBLEM";
 
 
 addMessage(
@@ -668,109 +1788,136 @@ addMessage(
 
 
 
+clearButtons();
+
+
+
 createButton(
 "🔧 Ремонт",
-()=>problemSelect("REPAIR")
+function(){
+
+problemSelect(
+"РЕМОНТ"
+);
+
+}
+
 );
 
 
 
 createButton(
 "🛠 Обслуживание",
-()=>problemSelect("MAINTENANCE")
+function(){
+
+problemSelect(
+"ОБСЛУЖИВАНИЕ"
+);
+
+}
+
 );
 
 
 
 createButton(
 "🔍 Диагностика",
-()=>problemSelect("DIAGNOSTICS")
+function(){
+
+problemSelect(
+"ДИАГНОСТИКА"
+);
+
+}
+
 );
 
 
 
 createButton(
 "❓ Другая проблема",
-()=>problemSelect("OTHER_PROBLEM")
+function(){
+
+problemSelect(
+"ДРУГАЯ_ПРОБЛЕМА"
 );
 
+}
+
+);
+
+
+
+backButton(
+showStartMenu
+);
 
 
 }
 
 
 
-function problemSelect(type){
+function problemSelect(value){
 
 
-session.problem_type=type;
-
-
-clearButtons();
+setField(
+"problem_type",
+value
+);
 
 
 addMessage(
-"Опишите, пожалуйста, что произошло."
+"Опишите, пожалуйста, проблему подробнее."
 );
 
+
+currentBranch="PROBLEM_COMMENT";
 
 
 }
 
 
 
-// ==============================
-// EMERGENCY
-// ==============================
+// ==========================================
+// АВАРИЙНАЯ СИТУАЦИЯ
+// ==========================================
 
 
 function emergencyStart(){
 
 
-session.intent="EMERGENCY";
-
-
-clearButtons();
+currentBranch="EMERGENCY";
 
 
 addMessage(
-"⚠️ Опишите аварийную ситуацию.\nНапример: перелив, затопило участок, система перестала работать."
+"⚠️ Опишите аварийную ситуацию.\n\nНапример: перелив, затопило участок, система перестала работать."
 );
-
 
 
 }
 
 
 
-// ==============================
-// Получение текста клиента
-// ==============================
 
-
-const inputField=document.getElementById(
-"user-input"
-);
-
-
-const sendButton=document.getElementById(
-"send-button"
-);
-
+// ==========================================
+// ОБРАБОТКА ТЕКСТОВЫХ ОТВЕТОВ
+// ==========================================
 
 
 sendButton.onclick=function(){
 
 
-let text=inputField.value.trim();
+let text =
+inputField.value.trim();
 
 
 
-if(text==="") return;
+if(text==="")
+return;
 
 
 
-addMessage(text,"client");
+clientMessage(text);
 
 
 
@@ -778,14 +1925,64 @@ inputField.value="";
 
 
 
-session.client_comment=text;
+
+// авария
+
+if(currentBranch==="EMERGENCY"){
 
 
-
-console.log(
-"SESSION:",
-session
+setField(
+"client_comment",
+text
 );
+
+
+showContacts();
+
+
+return;
+
+}
+
+
+
+// проблема
+
+if(currentBranch==="PROBLEM_COMMENT"){
+
+
+setField(
+"client_comment",
+text
+);
+
+
+showContacts();
+
+
+return;
+
+}
+
+
+
+// услуга
+
+if(currentBranch==="SERVICE_COMMENT"){
+
+
+setField(
+"client_comment",
+text
+);
+
+
+showContacts();
+
+
+return;
+
+}
 
 
 
@@ -794,20 +1991,213 @@ session
 
 
 
-// ==============================
-// Подготовка отправки Albato
-// ==============================
+// ==========================================
+// КОНТАКТЫ
+// ==========================================
 
 
-function sendToAlbato(){
+function showContacts(){
 
 
-console.log(
-"DATA FOR ALBATO:",
-session
+currentBranch="CONTACTS";
+
+
+clearButtons();
+
+
+
+addMessage(
+"Спасибо 👍\n\nЧтобы специалист мог связаться с вами, оставьте контактные данные."
 );
 
 
-// Здесь позже добавим webhook Albato
+
+addMessage(
+"Как вас зовут?"
+);
+
+
 
 }
+
+
+
+// временное хранение этапа контактов
+
+let contactStep="NAME";
+
+
+
+
+
+// ==========================================
+// ОБНОВЛЯЕМ ОБРАБОТКУ ТЕКСТА
+// ==========================================
+
+
+function processContact(text){
+
+
+if(contactStep==="NAME"){
+
+
+setField(
+"client_name",
+text
+);
+
+
+contactStep="PHONE";
+
+
+addMessage(
+"Укажите ваш телефон."
+);
+
+
+return;
+
+}
+
+
+
+if(contactStep==="PHONE"){
+
+
+setField(
+"client_phone",
+text
+);
+
+
+contactStep="LOCATION";
+
+
+addMessage(
+"Укажите населённый пункт или адрес объекта."
+);
+
+
+return;
+
+}
+
+
+
+if(contactStep==="LOCATION"){
+
+
+setField(
+"location",
+text
+);
+
+
+
+finishRequest();
+
+
+return;
+
+}
+
+
+
+}
+
+
+
+
+// ==========================================
+// ФИНАЛ
+// ==========================================
+
+
+function finishRequest(){
+
+
+addMessage(
+"Спасибо 👍 Заявка принята.\nСпециалист свяжется с вами в ближайшее время."
+);
+
+
+
+console.log(
+"ГОТОВО ДЛЯ ALBATO:",
+SESSION
+);
+
+
+// здесь подключаем webhook Albato
+
+
+}
+
+
+
+
+
+// ==========================================
+// ПЕРЕХВАТ ТЕКСТА
+// ==========================================
+
+
+const oldSend =
+sendButton.onclick;
+
+
+
+sendButton.onclick=function(){
+
+
+let text =
+inputField.value.trim();
+
+
+
+if(text==="")
+return;
+
+
+
+inputField.value="";
+
+
+
+clientMessage(text);
+
+
+
+if(currentBranch==="CONTACTS"){
+
+processContact(text);
+
+return;
+
+}
+
+
+
+if(
+currentBranch==="EMERGENCY" ||
+currentBranch==="PROBLEM_COMMENT" ||
+currentBranch==="SERVICE_COMMENT"
+){
+
+
+setField(
+"client_comment",
+text
+);
+
+
+showContacts();
+
+
+return;
+
+}
+
+
+
+};
