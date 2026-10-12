@@ -1,23 +1,34 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ИИ-помощник Дачный комфорт</title>
+<title>
+ИИ-помощник Дачный комфорт
+</title>
+
 
 <link rel="stylesheet" href="style.css">
 
+
 </head>
+
 
 <body>
 
 
-<!-- Кнопка открытия чата -->
+<!-- Кнопка открытия -->
 
 <div id="ai-widget-button">
-    💬
+
+💬
+
 </div>
+
 
 
 <!-- Окно помощника -->
@@ -25,64 +36,98 @@
 <div id="ai-widget-window">
 
 
-    <!-- Шапка -->
 
-    <div class="ai-header">
+<!-- Шапка -->
 
-        <img src="assets/assistant.png" 
-             class="assistant-avatar">
+<div class="ai-header">
 
-        <div>
-            <div class="assistant-title">
-                ИИ-помощник
-            </div>
 
-            <div class="assistant-company">
-                Дачный комфорт
-            </div>
-        </div>
-
-    </div>
+<img 
+src="assets/assistant.png"
+class="assistant-avatar"
+>
 
 
 
-    <!-- Сообщения -->
+<div>
 
-    <div id="chat-messages">
+<div class="assistant-title">
 
-    </div>
+ИИ-помощник
 
-
-
-    <!-- Кнопки сценариев -->
-
-    <div id="scenario-buttons">
-
-    </div>
+</div>
 
 
+<div class="assistant-company">
 
-    <!-- Ввод текста -->
+Дачный комфорт
 
-    <div class="input-area">
-
-        <input 
-        id="user-input"
-        placeholder="Введите сообщение..."
-        >
-
-        <button id="send-button">
-            ➤
-        </button>
-
-    </div>
+</div>
 
 
 </div>
 
 
 
+</div>
+
+
+
+
+
+<!-- История сообщений -->
+
+<div id="chat-history">
+
+
+</div>
+
+
+
+
+<!-- Кнопки текущего шага -->
+
+<div id="options-panel">
+
+
+</div>
+
+
+
+
+
+<!-- Поле ввода -->
+
+<div class="input-area">
+
+
+<input 
+id="user-input"
+type="text"
+placeholder="Введите сообщение..."
+>
+
+
+<button id="send-button">
+
+➤
+
+</button>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
 <script src="script.js"></script>
 
+
 </body>
+
 </html>
