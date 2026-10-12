@@ -1,1 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>ИИ-помощник Дачный комфорт</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+<!-- Кнопка открытия чата -->
+
+<div id="ai-widget-button">
+    💬
+</div>
+
+
+<!-- Окно помощника -->
+
+<div id="ai-widget-window">
+
+
+    <!-- Шапка -->
+
+    <div class="ai-header">
+
+        <img src="assets/assistant.png" 
+             class="assistant-avatar">
+
+        <div>
+            <div class="assistant-title">
+                ИИ-помощник
+            </div>
+
+            <div class="assistant-company">
+                Дачный комфорт
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <!-- Сообщения -->
+
+    <div id="chat-messages">
+
+    </div>
+
+
+
+    <!-- Кнопки сценариев -->
+
+    <div id="scenario-buttons">
+
+    </div>
+
+
+
+    <!-- Ввод текста -->
+
+    <div class="input-area">
+
+        <input 
+        id="user-input"
+        placeholder="Введите сообщение..."
+        >
+
+        <button id="send-button">
+            ➤
+        </button>
+
+    </div>
+
+
+</div>
+
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
