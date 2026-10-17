@@ -335,8 +335,8 @@ message.className =
 
 
 
-message.innerText =
-text;
+message.innerText = text;
+message.style.whiteSpace = "pre-line";
 
 
 
@@ -472,8 +472,59 @@ JSON.stringify(payload)
 
 
 
-const result =
-await response.json();
+
+const rawResponse = await response.text();
+
+let result;
+
+try {
+    // Обычный корректный JSON обрабатываем без изменений.
+    result = JSON.parse(rawResponse);
+
+} catch (parseError) {
+    // Если в JSON внутри текстового поля оказались
+    // необработанные управляющие символы, исправляем
+    // только их внутри строковых значений.
+    let repaired = "";
+    let insideString = false;
+    let escaped = false;
+
+    for (const char of rawResponse) {
+        const code = char.charCodeAt(0);
+
+        if (!insideString) {
+            repaired += char;
+
+            if (char === '"') {
+                insideString = true;
+            }
+
+            continue;
+        }
+
+        if (code < 32) {
+            repaired += "\\u" +
+                code.toString(16).padStart(4, "0");
+            escaped = false;
+            continue;
+        }
+
+        repaired += char;
+
+        if (escaped) {
+            escaped = false;
+        } else if (char === "\\") {
+            escaped = true;
+        } else if (char === '"') {
+            insideString = false;
+        }
+    }
+
+    // Если ответ повреждён сильнее, ошибка попадёт
+    // в существующий catch функции sendToAI().
+    result = JSON.parse(repaired);
+}
+
 
 
 
