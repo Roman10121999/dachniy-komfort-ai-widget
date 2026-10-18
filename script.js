@@ -359,32 +359,57 @@ chatHistory.scrollHeight;
 
 
 
-sendButton.onclick=function(){
+// Единая функция отправки сообщения
+function sendUserMessage() {
+  const text = userInput.value.trim();
 
+  if (text === "") return;
 
-let text =
-userInput.value.trim();
+  // Убираем стартовые кнопки после собственного сообщения клиента
+  if (optionsPanel) {
+    optionsPanel.innerHTML = "";
+  }
 
+  addClientMessage(text);
 
+  userInput.value = "";
+  resizeUserInput();
 
-if(text==="")
-return;
+  sendToAI(text);
+}
 
+// Отправка кнопкой
+sendButton.onclick = sendUserMessage;
 
+// Enter отправляет, Ctrl+Enter и Shift+Enter добавляют перенос строки
+userInput.addEventListener("keydown", function(event) {
+  if (
+    event.key === "Enter" &&
+    !event.ctrlKey &&
+    !event.metaKey &&
+    !event.shiftKey
+  ) {
+    event.preventDefault();
+    sendUserMessage();
+  }
+});
 
-addClientMessage(text);
+// Автоматическая высота поля
+function resizeUserInput() {
+  userInput.style.height = "auto";
+  userInput.style.height =
+    Math.min(userInput.scrollHeight, 180) + "px";
 
+  userInput.style.overflowY =
+    userInput.scrollHeight > 180 ? "auto" : "hidden";
+}
 
+userInput.style.resize = "none";
+userInput.style.overflowY = "hidden";
 
-userInput.value="";
+userInput.addEventListener("input", resizeUserInput);
 
-
-
-sendToAI(text);
-
-
-
-};
+resizeUserInput();
 
 
 
