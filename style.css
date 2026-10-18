@@ -581,30 +581,25 @@ flex-shrink:0;
 
 
 
-#user-input{
+#user-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 45px;
+  max-height: 180px;
+  height: 45px;
 
+  border-radius: 22px;
+  border: 1px solid #ddd;
+  padding: 11px 18px;
 
-flex:1;
+  font-size: 15px;
+  line-height: 21px;
+  outline: none;
 
-
-height:45px;
-
-
-border-radius:22px;
-
-
-border:1px solid #ddd;
-
-
-padding:0 18px;
-
-
-font-size:15px;
-
-
-outline:none;
-
-
+  resize: none;
+  overflow-y: hidden;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 
