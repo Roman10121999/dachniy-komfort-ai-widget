@@ -359,32 +359,72 @@ chatHistory.scrollHeight;
 
 
 
-sendButton.onclick=function(){
+// ==========================================
+// ОТПРАВКА СООБЩЕНИЯ AI
+// Widget → Albato → GigaChat
+// ==========================================
 
+// Автоматическая высота — только если поле является textarea.
+// Для обычного input стили высоты не меняем.
+function resizeUserInput() {
+  if (!userInput || userInput.tagName !== "TEXTAREA") {
+    return;
+  }
 
-let text =
-userInput.value.trim();
+  userInput.style.height = "auto";
+  userInput.style.height =
+    Math.min(userInput.scrollHeight, 180) + "px";
 
+  userInput.style.overflowY =
+    userInput.scrollHeight > 180 ? "auto" : "hidden";
+}
 
+// Одна функция отправки для кнопки и клавиатуры.
+function sendUserMessage() {
+  let text = userInput.value.trim();
 
-if(text==="")
-return;
+  if (text === "") {
+    return;
+  }
 
+  // Убираем стартовые кнопки после собственного сообщения клиента.
+  if (optionsPanel) {
+    optionsPanel.innerHTML = "";
+  }
 
+  addClientMessage(text);
 
-addClientMessage(text);
+  userInput.value = "";
 
+  // Возвращаем исходную высоту, если используется textarea.
+  resizeUserInput();
 
+  sendToAI(text);
+}
 
-userInput.value="";
+// Существующая кнопка отправки.
+sendButton.onclick = sendUserMessage;
 
+// Enter отправляет сообщение.
+// Ctrl+Enter и Shift+Enter оставляют перенос строки по умолчанию.
+userInput.addEventListener("keydown", function(event) {
+  if (
+    event.key === "Enter" &&
+    !event.ctrlKey &&
+    !event.metaKey &&
+    !event.shiftKey
+  ) {
+    event.preventDefault();
+    sendUserMessage();
+  }
+});
 
-
-sendToAI(text);
-
-
-
-};
+// Автоувеличение включается только для textarea.
+// Не меняем размеры обычного input.
+if (userInput && userInput.tagName === "TEXTAREA") {
+  userInput.addEventListener("input", resizeUserInput);
+  resizeUserInput();
+}
 
 
 
