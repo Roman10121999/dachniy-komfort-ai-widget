@@ -14,6 +14,9 @@
 const ALBATO_WEBHOOK_URL =
 "https://h.albato.ru/wh/38/1lf2f6v/_6fxBemtxuMWEUMK8RtHU2n8WCC4U8Vb-uDcVZbsdlA/";
 
+const TOP3_WEBHOOK_URL =
+"https://h.albato.ru/wh/38/1lf2f6v/k24CiuQE_9MNAkLQa0fJJRGduEENH0zP9fA2gQg5WIU/";
+
 
 
 
