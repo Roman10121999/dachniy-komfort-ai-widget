@@ -768,22 +768,21 @@ data.buttons
 
 
 
-// TOP-3 товары
 
+    // TOP-3 товары из ответа Workflow 1
+    if (data.products) {
+        showProducts(data.products);
+    }
 
-if(data.products){
-
-
-showProducts(
-data.products
-);
-
-
+    // Получаем TOP-3 из Workflow 3 после выбора оборудования
+    if (
+        session.intent === "BUY_PRODUCT" &&
+        !top3Received
+    ) {
+        pollTop3();
+    }
 }
 
-
-
-}
 
 
 
@@ -1028,6 +1027,110 @@ function showProducts(products) {
 
 
 
+
+let top3Polling = false;
+let top3Received = false;
+
+async function pollTop3() {
+    if (top3Polling || top3Received) {
+        return;
+    }
+
+    top3Polling = true;
+
+    try {
+        for (let attempt = 0; attempt < 24; attempt++) {
+            if (attempt > 0) {
+                await new Promise(resolve => setTimeout(resolve, 5000));
+            }
+
+            let response;
+
+            try {
+                response = await fetch(TOP3_WEBHOOK_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        session_id: session.session_id
+                    })
+                });
+            } catch (error) {
+                console.error("TOP-3 connection error:", error);
+                continue;
+            }
+
+            if (!response.ok) {
+                console.error("TOP-3 HTTP error:", response.status);
+                continue;
+            }
+
+            let result;
+
+            try {
+                result = await response.json();
+            } catch (error) {
+                console.error("TOP-3 response is not JSON:", error);
+                continue;
+            }
+
+            console.log("TOP-3 RESPONSE:", result);
+
+            if (result.session_id !== session.session_id) {
+                console.error("TOP-3 session_id mismatch");
+                return;
+            }
+
+            if (result.scenario2_status !== "RESULT_READY") {
+                continue;
+            }
+
+            let parsedModels;
+
+            try {
+                parsedModels =
+                    typeof result.recommended_models_json === "string"
+                        ? JSON.parse(result.recommended_models_json)
+                        : result.recommended_models_json;
+            } catch (error) {
+                console.error("TOP-3 models JSON error:", error);
+                continue;
+            }
+
+            const products = Array.isArray(parsedModels)
+                ? parsedModels
+                : parsedModels?.recommended_models;
+
+            if (!Array.isArray(products) || products.length === 0) {
+                console.error("TOP-3 models are empty or invalid");
+                continue;
+            }
+
+            const validProducts = products.filter(product =>
+                product &&
+                typeof product.model === "string" &&
+                product.model.trim() !== ""
+            );
+
+            if (validProducts.length === 0) {
+                console.error("TOP-3 contains no valid models");
+                continue;
+            }
+
+            showProducts(validProducts);
+            top3Received = true;
+            return;
+        }
+
+        addAIMessage(
+            "Подбор занимает больше времени, чем обычно. " +
+            "Пожалуйста, напишите «Проверить подбор», и я попробую получить результат ещё раз."
+        );
+    } finally {
+        top3Polling = false;
+    }
+}
 
 
 // ==========================================
