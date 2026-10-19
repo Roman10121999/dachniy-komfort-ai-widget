@@ -929,94 +929,101 @@ typingIndicator.innerText =
 // ==========================================
 
 
-function showProducts(products){
+function showProducts(products) {
+    if (!productsContainer || !Array.isArray(products)) {
+        return;
+    }
 
+    productsContainer.innerHTML = "";
 
+    const title = document.createElement("div");
+    title.className = "products-title";
+    title.innerText = "Подобрал для вас подходящие варианты 👇";
+    productsContainer.appendChild(title);
 
-if(!productsContainer)
-return;
+    const validProducts = products
+        .map(product => ({
+            model: product.model || product.name || "",
+            series: product.series || "",
+            price: product.price || "",
+            performance: product.performance || product.description || "",
+            users: product.users || "",
+            electricity: product.electricity || "",
+            reason: product.reason || ""
+        }))
+        .filter(product => product.model.trim() !== "")
+        .slice(0, 3);
 
+    validProducts.forEach((product, index) => {
+        const card = document.createElement("div");
+        card.className = "product-card";
 
+        const medals = ["🥇", "🥈", "🥉"];
 
-productsContainer.innerHTML="";
+        const heading = document.createElement("div");
+        heading.className = "product-name";
+        heading.innerText = `${medals[index]} ${product.model}`;
+        card.appendChild(heading);
 
+        const table = document.createElement("table");
+        table.style.width = "100%";
+        table.style.borderCollapse = "collapse";
+        table.style.fontSize = "14px";
 
+        const rows = [
+            ["Серия", product.series],
+            ["Цена оборудования", product.price],
+            ["Производительность", product.performance],
+            ["Количество пользователей", product.users],
+            ["Электричество", product.electricity],
+            ["Почему подходит", product.reason]
+        ];
 
+        rows.forEach(([label, value]) => {
+            if (!value || !String(value).trim()) {
+                return;
+            }
 
-let title =
-document.createElement("div");
+            const row = document.createElement("tr");
 
+            const labelCell = document.createElement("th");
+            labelCell.innerText = label;
+            labelCell.style.textAlign = "left";
+            labelCell.style.verticalAlign = "top";
+            labelCell.style.padding = "8px";
+            labelCell.style.width = "40%";
+            labelCell.style.borderBottom = "1px solid #e5e7eb";
+            labelCell.style.color = "#52615c";
 
-title.className=
-"products-title";
+            const valueCell = document.createElement("td");
+            valueCell.innerText = String(value);
+            valueCell.style.padding = "8px";
+            valueCell.style.verticalAlign = "top";
+            valueCell.style.borderBottom = "1px solid #e5e7eb";
+            valueCell.style.overflowWrap = "anywhere";
 
+            row.appendChild(labelCell);
+            row.appendChild(valueCell);
+            table.appendChild(row);
+        });
 
-title.innerText =
-"Подобрал для вас подходящие варианты 👇";
+        card.appendChild(table);
 
+        card.style.background = "#ffffff";
+        card.style.border = "1px solid #dce7e2";
+        card.style.borderRadius = "12px";
+        card.style.padding = "14px";
+        card.style.marginBottom = "14px";
+        card.style.boxShadow = "0 2px 7px rgba(0,0,0,0.05)";
 
+        productsContainer.appendChild(card);
+    });
 
-productsContainer.appendChild(title);
-
-
-
-
-
-products.forEach(
-(product,index)=>{
-
-
-let card =
-document.createElement("div");
-
-
-
-card.className=
-"product-card";
-
-
-
-let medal="🥇";
-
-
-if(index===1)
-medal="🥈";
-
-
-if(index===2)
-medal="🥉";
-
-
-
-card.innerHTML = `
-
-<div class="product-name">
-
-${medal} ${product.name}
-
-</div>
-
-
-<div class="product-description">
-
-${product.description || ""}
-
-</div>
-
-`;
-
-
-
-productsContainer.appendChild(card);
-
-
-
-}
-
-);
-
-
-
+    if (validProducts.length === 0) {
+        const message = document.createElement("div");
+        message.innerText = "Пока не удалось отобразить модели. Попробуйте проверить подбор чуть позже.";
+        productsContainer.appendChild(message);
+    }
 }
 
 
