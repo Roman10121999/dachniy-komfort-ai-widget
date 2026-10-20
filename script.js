@@ -631,64 +631,12 @@ addAIMessage(
 
 
 
-function handleAIResponse(data){
+// Основной ответ AI — выводим только один раз
+const assistantReply =
+    data.assistant_message || data.answer;
 
-
-
-console.log(
-"AI DATA:",
-data
-);
-
-
-
-
-
-// если пришёл обычный текст
-
-
-if(typeof data==="string"){
-
-
-addAIMessage(data);
-
-
-return;
-
-
-}
-
-
-
-
-
-// основной формат
-
-
-if(data.assistant_message){
-
-
-addAIMessage(
-data.assistant_message
-);
-
-
-}
-
-
-
-
-// альтернативный формат
-
-
-if(data.answer){
-
-
-addAIMessage(
-data.answer
-);
-
-
+if (assistantReply) {
+    addAIMessage(assistantReply);
 }
 
 
@@ -1123,10 +1071,7 @@ async function pollTop3() {
             return;
         }
 
-        addAIMessage(
-            "Подбор занимает больше времени, чем обычно. " +
-            "Пожалуйста, напишите «Проверить подбор», и я попробую получить результат ещё раз."
-        );
+        
     } finally {
         top3Polling = false;
     }
