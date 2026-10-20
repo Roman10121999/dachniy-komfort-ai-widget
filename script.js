@@ -774,13 +774,7 @@ data.buttons
         showProducts(data.products);
     }
 
-    // Получаем TOP-3 из Workflow 3 после выбора оборудования
-    if (
-        session.intent === "BUY_PRODUCT" &&
-        !top3Received
-    ) {
-        pollTop3();
-    }
+    
 }
 
 
@@ -1123,10 +1117,7 @@ async function pollTop3() {
             return;
         }
 
-        addAIMessage(
-            "Подбор занимает больше времени, чем обычно. " +
-            "Пожалуйста, напишите «Проверить подбор», и я попробую получить результат ещё раз."
-        );
+        
     } finally {
         top3Polling = false;
     }
